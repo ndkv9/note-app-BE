@@ -1,5 +1,9 @@
 const express = require('express')
 const app = express()
+
+app.use(express.json())
+
+// hardcode data
 let notes = [
 	{
 		id: 1,
@@ -20,6 +24,13 @@ let notes = [
 		important: true,
 	},
 ]
+
+app.post('/api/notes', (req, res) => {
+	const newNote = req.body
+	notes = notes.concat(newNote)
+
+	res.json(newNote)
+})
 
 app.get('/', (req, res) => {
 	res.send('<h3>hello darkness</h3>')
