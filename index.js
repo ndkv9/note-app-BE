@@ -1,7 +1,6 @@
 const express = require('express')
 const app = express()
-
-const notes = [
+let notes = [
 	{
 		id: 1,
 		content: 'HTML is easy',
@@ -41,9 +40,8 @@ app.get('/api/notes/:id', (req, res) => {
 })
 
 app.delete('/api/notes/:id', (req, res) => {
-	const id = Number(id)
-	const noteToDelete = notes.find(note => note.id === id)
-	const notes = notes.filter(note => note.id !== Nid)
+	const id = Number(req.params.id)
+	notes = notes.filter(note => note.id !== id)
 
 	res.status(204).end()
 })
