@@ -30,5 +30,23 @@ app.get('/api/notes', (req, res) => {
 	res.json(notes)
 })
 
+app.get('/api/notes/:id', (req, res) => {
+	const id = req.params.id
+	const note = notes.find(note => String(note.id) === id)
+	if (note) {
+		res.json(note)
+	} else {
+		res.status(404).end()
+	}
+})
+
+app.delete('/api/notes/:id', (req, res) => {
+	const id = Number(id)
+	const noteToDelete = notes.find(note => note.id === id)
+	const notes = notes.filter(note => note.id !== Nid)
+
+	res.status(204).end()
+})
+
 const PORT = 3001
 app.listen(PORT, () => console.log(`server running on port ${PORT}`))
