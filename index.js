@@ -55,10 +55,6 @@ app.post('/api/notes', (req, res) => {
 	res.json(note)
 })
 
-app.get('/', (req, res) => {
-	res.send('<h3>hello darkness</h3>')
-})
-
 app.get('/api/notes', (req, res) => {
 	res.json(notes)
 })
