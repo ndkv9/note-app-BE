@@ -26,7 +26,7 @@ let notes = [
 ]
 
 const generateId = () => {
-	const maxId = notes.length > 0 ? Math.max(notes.map(note => note.id)) : 0
+	const maxId = notes.length > 0 ? Math.max(...notes.map(note => note.id)) : 0
 	return maxId + 1
 }
 
