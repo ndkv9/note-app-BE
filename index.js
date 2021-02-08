@@ -5,11 +5,13 @@ const app = express()
 const Note = require('./models/note')
 
 const cors = require('cors')
+const note = require('./models/note')
 
 app.use(express.json())
 app.use(cors())
 app.use(express.static('build'))
 
+// crate a new note
 app.post('/api/notes', (req, res) => {
 	const body = req.body
 
@@ -19,30 +21,24 @@ app.post('/api/notes', (req, res) => {
 		})
 	}
 
-	note = {
+	note = new Note({
 		content: body.content,
 		important: body.important || false,
 		date: new Date(),
-		id: generateId(),
-	}
+	})
 
-	notes = notes.concat(note)
-
-	res.json(note)
+	note.save().then(savedNote => res.json(savedNote))
 })
 
+// retrieve all notes
 app.get('/api/notes', (req, res) => {
 	Note.find({}).then(notes => res.json(notes))
 })
 
+// retrieve a single note
 app.get('/api/notes/:id', (req, res) => {
 	const id = req.params.id
-	const note = notes.find(note => String(note.id) === id)
-	if (note) {
-		res.json(note)
-	} else {
-		res.status(404).end()
-	}
+	const note = Note.findById(id).then(returnedNote => res.json(returnedNote))
 })
 
 app.delete('/api/notes/:id', (req, res) => {
