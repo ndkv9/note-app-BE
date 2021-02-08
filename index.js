@@ -1,31 +1,7 @@
 const express = require('express')
-const mongoose = require('mongoose')
-
 const app = express()
 
-const url = `mongodb+srv://erik:D3thoima101@cluster101.4lp4q.mongodb.net/note-app?retryWrites=true&w=majority`
-mongoose.connect(url, {
-	useNewUrlParser: true,
-	useUnifiedTopology: true,
-	useFindAndModify: false,
-	useCreateIndex: true,
-})
-
-const noteSchema = new mongoose.Schema({
-	content: String,
-	date: Date,
-	important: Boolean,
-})
-
-noteSchema.set('toJSON', {
-	transform: (document, returnedObj) => {
-		returnedObj.id = returnedObj._id.toString()
-		delete returnedObj._id
-		delete returnedObj.__v
-	},
-})
-
-const Note = mongoose.model('Note', noteSchema)
+const Note = require('./model/note')
 
 const cors = require('cors')
 
