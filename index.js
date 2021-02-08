@@ -5,7 +5,6 @@ const app = express()
 const Note = require('./models/note')
 
 const cors = require('cors')
-const note = require('./models/note')
 
 app.use(express.json())
 app.use(cors())
@@ -21,7 +20,7 @@ app.post('/api/notes', (req, res) => {
 		})
 	}
 
-	note = new Note({
+	const note = new Note({
 		content: body.content,
 		important: body.important || false,
 		date: new Date(),
@@ -38,7 +37,7 @@ app.get('/api/notes', (req, res) => {
 // retrieve a single note
 app.get('/api/notes/:id', (req, res) => {
 	const id = req.params.id
-	const note = Note.findById(id).then(returnedNote => res.json(returnedNote))
+	Note.findById(id).then(returnedNote => res.json(returnedNote))
 })
 
 app.delete('/api/notes/:id', (req, res) => {
