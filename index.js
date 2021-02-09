@@ -35,9 +35,17 @@ app.get('/api/notes', (req, res) => {
 })
 
 // retrieve a single note
-app.get('/api/notes/:id', (req, res) => {
+app.get('/api/notes/:id', (req, res, next) => {
 	const id = req.params.id
-	Note.findById(id).then(returnedNote => res.json(returnedNote))
+	Note.findById(id)
+		.then(returnedNote => {
+			if (returnedNote) {
+				res.json(returnedNote)
+			} else {
+				res.status(404).end()
+			}
+		})
+		.catch(err => next(err))
 })
 
 app.delete('/api/notes/:id', (req, res) => {
@@ -52,6 +60,18 @@ const unknownEndpoint = (request, response) => {
 }
 
 app.use(unknownEndpoint)
+
+const errorHandler = (error, req, res, next) => {
+	console.error(error.message)
+
+	if (error.name === 'CastError') {
+		res.status(400).send({ error: 'malformatted id' })
+	}
+
+	next(error)
+}
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => console.log(`server running on port ${PORT}`))
