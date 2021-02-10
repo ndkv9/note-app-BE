@@ -22,7 +22,8 @@ app.post('/api/notes', (req, res, next) => {
 
 	note
 		.save()
-		.then(savedNote => res.json(savedNote))
+		.then(savedNote => savedNote.toJSON())
+		.then(formattedNote => res.json(formattedNote))
 		.catch(err => next(err))
 })
 
