@@ -23,5 +23,6 @@ module.exports = {
 		'arrow-spacing': ['error', { before: true, after: true }],
 		'no-console': 0,
 		'linebreak-style': ['error', { before: true, after: true }],
+		'no-control-regex': 0,
 	},
 }
