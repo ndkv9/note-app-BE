@@ -3,7 +3,7 @@ const palindrome = str => {
 }
 
 const average = arr => {
-	return arr.reduce((a, i) => a + i, 0) / arr.length
+	return arr.length === 0 ? 0 : arr.reduce((a, i) => a + i, 0) / arr.length
 }
 
 module.exports = { palindrome, average }
