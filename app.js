@@ -1,7 +1,7 @@
 const config = require('./utils/config')
 const express = require('express')
-const helmet = require('helmet')
 require('express-async-errors')
+const helmet = require('helmet')
 const app = express()
 const cors = require('cors')
 const notesRouter = require('./controllers/notes')
