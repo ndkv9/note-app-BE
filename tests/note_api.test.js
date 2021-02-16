@@ -9,10 +9,11 @@ const Note = require('../models/note')
 
 beforeEach(async () => {
 	await Note.deleteMany({})
-	let oneObj = new Note(helper.initialNotes[0])
-	await oneObj.save()
-	oneObj = new Note(helper.initialNotes[1])
-	await oneObj.save()
+
+	for (let note of helper.initialNotes) {
+		let noteObj = new Note(note)
+		await noteObj.save()
+	}
 })
 
 test('notes are returned as json', async () => {
@@ -30,7 +31,6 @@ test('all notes are returned', async () => {
 
 test('a specific note is within the returned notes', async () => {
 	const response = await api.get('/api/notes')
-
 	const contents = response.body.map(r => r.content)
 	expect(contents).toContain('Browser can execute only Javascript')
 })
