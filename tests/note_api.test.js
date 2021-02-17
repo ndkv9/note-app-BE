@@ -100,7 +100,7 @@ describe('when there is only one user in DB', () => {
 		User.deleteMany({})
 
 		const passwordHash = await bcrypt.hash('secret', 10)
-		const user = new User({ username: 'kakalot', passwordHash })
+		const user = new User({ username: 'saiyan1', passwordHash })
 
 		await user.save()
 	})
@@ -125,6 +125,25 @@ describe('when there is only one user in DB', () => {
 
 		const usernames = usersAtEnd.map(u => u.username)
 		expect(usernames).toContain(newUser.username)
+	})
+
+	test('creating new user fails if username already exists', async () => {
+		const usersAtStart = await helper.usersInDB()
+
+		const newUser = {
+			username: 'saiyan1',
+			name: 'gohan',
+			password: 'gokuson',
+		}
+
+		await api
+			.post('/')
+			.send(newUser)
+			.expect(400)
+			.expect('Content-Type', /application\/json/)
+
+		const usersAtEnd = await helper.usersInDB()
+		expect(usersAtEnd).toHaveLength(usersAtStart.length)
 	})
 })
 
