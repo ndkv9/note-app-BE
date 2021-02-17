@@ -1,4 +1,6 @@
 const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
+const User = require('../models/user')
 const supertest = require('supertest')
 const helper = require('./test_helper')
 const app = require('../app')
@@ -47,7 +49,7 @@ test('a valid note can be added', async () => {
 		.expect(200)
 		.expect('Content-Type', /application\/json/)
 
-	const notesAtEnd = await helper.notesInDb()
+	const notesAtEnd = await helper.notesInDB()
 	const contents = notesAtEnd.map(n => n.content)
 
 	expect(notesAtEnd).toHaveLength(helper.initialNotes.length + 1)
@@ -62,12 +64,12 @@ test('a note without content will not be saved', async () => {
 
 	await api.post('/api/notes').send(newNote).expect(400)
 
-	const notesAtEnd = await helper.notesInDb()
+	const notesAtEnd = await helper.notesInDB()
 	expect(notesAtEnd).toHaveLength(helper.initialNotes.length)
 })
 
 test('a specific note can be viewed', async () => {
-	const noteAtStart = await helper.notesInDb()
+	const noteAtStart = await helper.notesInDB()
 	const noteToView = noteAtStart[0]
 
 	const resultNote = await api
@@ -81,16 +83,49 @@ test('a specific note can be viewed', async () => {
 })
 
 test('a note can be deleted', async () => {
-	const noteAtStart = await helper.notesInDb()
+	const noteAtStart = await helper.notesInDB()
 	const noteToDel = noteAtStart[0]
 
 	await api.delete(`/api/notes/${noteToDel.id}`).expect(204)
 
-	const noteAtEnd = await helper.notesInDb()
+	const noteAtEnd = await helper.notesInDB()
 	expect(noteAtEnd).toHaveLength(noteAtStart.length - 1)
 
 	const contents = noteAtEnd.map(n => n.content)
 	expect(contents).not.toContain(noteToDel.content)
+})
+
+describe('when there is only one user in DB', () => {
+	beforeEach(async () => {
+		User.deleteMany({})
+
+		const passwordHash = await bcrypt.hash('secret', 10)
+		const user = new User({ username: 'kakalot', passwordHash })
+
+		await user.save()
+	})
+
+	test('creating succeeds with a fresh username', async () => {
+		const usersAtStart = await helper.usersInDB()
+
+		const newUser = {
+			username: 'namek1',
+			name: 'piccolo',
+			password: 'password2',
+		}
+
+		await api
+			.post('/api/users')
+			.send(newUser)
+			.expect(200)
+			.expect('Content-Type', /application\/json/)
+
+		const usersAtEnd = await helper.usersInDB()
+		expect(usersAtEnd).toHaveLength(usersAtStart.length + 1)
+
+		const usernames = usersAtEnd.map(u => u.username)
+		expect(usernames).toContain(newUser.username)
+	})
 })
 
 afterAll(() => {
