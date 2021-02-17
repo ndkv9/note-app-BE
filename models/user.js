@@ -16,7 +16,7 @@ userSchema.set('toJSON', {
 	transform: (doc, returnedObj) => {
 		returnedObj.id = returnedObj._id.toString()
 		delete returnedObj._id
-		delete returnedObject.__v
+		delete returnedObj.__v
 		// passwordHash should not be revealed
 		delete returnedObj.passwordHash
 	},
