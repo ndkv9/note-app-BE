@@ -136,14 +136,16 @@ describe('when there is only one user in DB', () => {
 			password: 'gokuson',
 		}
 
-		await api
-			.post('/')
+		const result = await api
+			.post('/api/users')
 			.send(newUser)
 			.expect(400)
 			.expect('Content-Type', /application\/json/)
 
 		const usersAtEnd = await helper.usersInDB()
 		expect(usersAtEnd).toHaveLength(usersAtStart.length)
+
+		expect(result.body.error).toContain('`username` to be unique')
 	})
 })
 
