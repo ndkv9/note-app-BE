@@ -52,6 +52,14 @@ notesRouter.post('/', async (request, response) => {
 	response.json(savedNote)
 })
 
+// reset the DB for testing
+router.post('/reset', async (req, res) => {
+	await Note.deleteMany({})
+	await User.deleteMany({})
+
+	res.status(204).end()
+})
+
 notesRouter.delete('/:id', async (request, response) => {
 	await Note.findByIdAndRemove(request.params.id)
 	response.status(204).end()
